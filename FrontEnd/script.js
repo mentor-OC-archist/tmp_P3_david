@@ -6,6 +6,7 @@ fetch(works)
     data.forEach((project) => {
       const figure = document.createElement("figure");
 
+    figure.dataset.id = project.categoryId
       const img = document.createElement("img");
       img.src = project.imageUrl;
       img.alt = project.title;
@@ -31,8 +32,16 @@ fetch(categories)
     const filter = document.createElement("div");
     filter.id = "filter-buttons";
 
+    const allButton = document.createElement("button");
+    allButton.textContent = "Tous";
+    allButton.id = "buttons"
+    allButton.dataset.category = "all";
+    allButton.addEventListener("click", filterGallery);
+    filter.appendChild(allButton);
+
     categories.forEach((category) => {
       const button = document.createElement("button");
+      button.id = "buttons"
       button.textContent = category.name;
       button.dataset.category = category.id; 
       button.addEventListener("click", filterGallery);
@@ -54,9 +63,9 @@ function filterGallery(event) {
   const figures = galleryDiv.querySelectorAll("figure");
 
   figures.forEach((figure) => {
-    const categories = figure.dataset.categories.split(","); 
+    const category = figure.dataset.id; 
 
-    if (categories.includes(categoryId) || categoryId === "all") {
+    if (category.includes(categoryId) || categoryId === "all") {
       figure.style.display = "block"; 
     } else {
       figure.style.display = "none"; 

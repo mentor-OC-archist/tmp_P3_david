@@ -188,6 +188,22 @@ footer nav ul {
 }
 
 
+#buttons{
+	width: 150px;
+	height: 37px;
+	display: inline;
+	margin: 5px;
+	border-radius: 60px;
+	border: 1px solid;
+	color: #1D6154;
+	background-color: white;
+}
+
+#buttons:hover{
+	color: white;
+	background-color: #1D6154;
+}
+
 /***** LOG IN ****/
 
 .login {
@@ -203,6 +219,7 @@ footer nav ul {
 
 .login form {
 	width: 350px;
+	
 }
 
 #email, #password {
