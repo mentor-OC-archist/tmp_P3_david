@@ -72,8 +72,3 @@ function filterGallery(event) {
     }
   });
 }
-
-
-
-
-

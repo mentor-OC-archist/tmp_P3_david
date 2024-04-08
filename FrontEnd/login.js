@@ -1,39 +1,67 @@
-const data = {
-    "email" : "sophie.bluel@test.tld",
-    "password" : "S0phie"
+const loginToggle = document.getElementById("login-toggle")
+const logoutToggle = document.getElementById("logout-toggle")
+const modalLogin = document.getElementById("js-modal")
+
+
+
+
+function toggleLoginLogoutButtons() {
+     const isLoggedIn = localStorage.getItem('tokenID')
+     if (isLoggedIn) {
+        loginToggle.style.display = 'none'
+        logoutToggle.style.display = 'inline-block'
+        modalLogin.style.display = "block"
+    } 
+    else {
+        loginToggle.style.display = 'inline-block'
+        logoutToggle.style.display = 'none'
+    }
 }
 
 const requestOptions = {
-    method: 'POST',
+    method: "POST",
     headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-    },
-    body: JSON.stringify(data)
+        "Content-Type": "application/json",
+        accept: "application/json"
+    }
 }
-
-
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4";
-localStorage.setItem('tokenID', token);
-
-const tokenRecupere = localStorage.getItem('tokenID');
-console.log("Token récupéré : ", tokenRecupere);
-
 
 const button = document.getElementById("submit")
-const loginsubmit = e=>{
-    console.log("fonction");
-    fetch ("http://localhost:5678/api/users/login",requestOptions)
-    .then(response => response.json()) 
+
+const loginUser = () => {
+    const email = document.getElementById("email").value; // sophie.bluel@test.tld
+    const password = document.getElementById("password").value; // S0phie
+    const data = {email, password};
+    requestOptions.body = JSON.stringify(data);
+    fetch("http://localhost:5678/api/users/login", requestOptions)
+    .then(response => response.json())
     .then(data => {
-        console.log(data); 
         if (data.token) {
-            window.location.href = "homepage.html";
-        } else {
-            console.log("La connexion a échoué.");
+            localStorage.setItem("tokenID", data.token)
+            console.log("Token recupéré:", data.token)
+            window.location.href = "index.html"
+        } 
+        
+        else {
+            const errorMessage = document.createElement('p')
+            errorMessage.textContent = "L'email ou le mot de passe est incorrect !"
+            errorMessage.style.color = "red"
+            
+            document.body.appendChild(errorMessage)
+            onsole.log("La connexion a échoué.")
+            console.log("Invalid credentials!")
         }
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(error))
 }
-console.log(button);
-button.addEventListener("click",loginsubmit)
+const logoutUser = () => {
+    localStorage.removeItem('tokenID')
+    toggleLoginLogoutButtons()
+    window.location.href = "index.html"
+}
+
+toggleLoginLogoutButtons()
+logoutToggle.addEventListener('click', logoutUser)
+button.addEventListener("click", loginUser)
+
+/** */
