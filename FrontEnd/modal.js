@@ -45,6 +45,6 @@ const stopPropagation = function (e){
     e.stopPropagation()
 }
 
-document.querySelectorAll("js-modal").forEach(a=>{ 
+document.querySelectorAll("modal-js").forEach(a=>{ 
     a.addEventListener("click", openModal)
 })

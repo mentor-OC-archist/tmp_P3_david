@@ -1,16 +1,14 @@
 const loginToggle = document.getElementById("login-toggle")
 const logoutToggle = document.getElementById("logout-toggle")
-const modalLogin = document.getElementById("js-modal")
-
-
-
+const modalLogin = document.getElementById("modal")
 
 function toggleLoginLogoutButtons() {
      const isLoggedIn = localStorage.getItem('tokenID')
      if (isLoggedIn) {
         loginToggle.style.display = 'none'
         logoutToggle.style.display = 'inline-block'
-        modalLogin.style.display = "block"
+        modalLogin.style.display = 'inline-block'
+         
     } 
     else {
         loginToggle.style.display = 'inline-block'
@@ -64,4 +62,3 @@ toggleLoginLogoutButtons()
 logoutToggle.addEventListener('click', logoutUser)
 button.addEventListener("click", loginUser)
 
-/** */
