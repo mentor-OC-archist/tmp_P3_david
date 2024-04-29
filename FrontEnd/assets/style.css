@@ -23,29 +23,36 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+
 body {
 	line-height: 1;	
 }
+
 ol, ul {
 	list-style: none;
 }
+
 blockquote, q {
 	quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
 	content: none;
 }
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 /** end reset css**/
 body {
 	max-width: 1140px;
@@ -53,12 +60,13 @@ body {
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0
-
 }
+
 section {
 	margin: 50px 0
 }
@@ -85,6 +93,7 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+
 nav ul {
 	display: flex;
 	align-items: center;
@@ -98,14 +107,18 @@ nav li {
 
 li:hover {
 	color: #B1663C;
+    font-weight: bold;
 }
+
 #introduction {
 	display: flex;
 	align-items: center;
 }
+
 #introduction figure {
 	flex: 1
 }
+
 #introduction img {
 	display: block;
 	margin: auto;
@@ -115,6 +128,7 @@ li:hover {
 #introduction article {
 	flex: 1
 }
+
 #introduction h2 {
 	margin-bottom: 1em;
 }
@@ -122,11 +136,17 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
 
+
+#portfolio {
+	position:relative;
+	z-index: 1;
+}
 
 #gallery {
 	width: 100%;
@@ -138,20 +158,22 @@ li:hover {
 
 #gallery img {
 	width: 100%;
-
 }
 
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
+
 #contact > * {
 	text-align: center;
 
 }
+
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
 	margin-top:30px;
@@ -165,9 +187,11 @@ margin: auto;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
 #contact label {
 	margin: 2em 0 1em 0;
 }
+
 #contact textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -190,7 +214,6 @@ footer nav ul {
 	margin: 2em
 }
 
-
 #buttons{
 	width: 150px;
 	height: 37px;
@@ -211,25 +234,37 @@ footer nav ul {
 /***** LOG IN ****/
 
 .login-container {
-	margin-top: 90px;
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background-color: white;
+	margin-top: 90px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	
+	z-index: 999;	
   }
+
+  #login-toggle {
+	text-decoration: none;
+}
+
+#login-toggle:hover {
+	color: #B1663C;
+}
+
+#login-toggle:active {
+	font-weight: bold;
+}
 
 .login-container form {
 	width: 350px;
   }
 
-  .title-login {
+.title-login {
 	margin-bottom: 30px;
   }
 
@@ -250,16 +285,14 @@ input {
     height: 35px;
 	border: none;
 }
-a {
-	text-decoration: none;
-}
+
+
 a:visited{
 	color: black;
 }
 
 
 /**** Modal ****/
-
 
 .modal {
 	width: 600px;
@@ -269,12 +302,19 @@ a:visited{
 	left: 35%;
 	background-color:white;
 	border-radius: 10px;
+	z-index: 999;
 }
 
 #modalLink {
+	position: absolute;
+	top: 10px;
+	right: 30%;
 	font-size: 15px;
-	justify-content: center;
-	display: flex;
+	text-decoration: none;
+}
+
+.fa-regular {
+	margin-right: 10px;
 }
 
 .modal-title {
@@ -287,23 +327,20 @@ a:visited{
    padding-top: 70px;
 }
 
-.modal-container{
-	width: 600px;
-	height: 630px;
-	padding: 20px;	
-}
-
 .modal-gallery {
-	width: 70%;
+	width: 80%;
     display: grid;
-	padding: 50px;
-    margin-top: 30px;
+	margin-left: 60px;
+    margin-top: 35px;
 	grid-template-columns: repeat(5, 1fr);
 	gap: 20px;
+	border-bottom: 1px solid #B3B3B3; 
+	padding-bottom: 50px;
+	
 }
 
 .modal-gallery img {
-	width: 80px;
+	width: 70px;
 }
 
 .addpicture {
@@ -313,18 +350,17 @@ a:visited{
 	display: block;
 }
 
-
 .image-container {
 	position: relative;
 	display: inline-block;
   }
   
-  .hide-button {
+.hide-button {
 	width: 20px; 
 	height: 20px; 
 	color: white;
 	top: 5px; 
-	right: 5px; 
+	right: 15px; 
 	font-size: 10px; 
 	border: none; 
 	padding: 3px 6px; 
@@ -353,13 +389,17 @@ a:visited{
 	padding: 15px;
 }
 
-
 #addPhotoForm{
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
     padding-left: 35px;
+	justify-content: center;
+}
+
+#titlework, #titlecategorie{
+	margin-top: 15px;
+	font-weight: 500;
+	color: #3D3D3D;
 }
 
 #namework, #categoriework {
@@ -367,9 +407,8 @@ a:visited{
 	height: 51px;
 	box-shadow: 0px 4px 14px 0px #00000017;
 	border: none;
-	margin-bottom: 15px;
+	margin-top: 15px;
 }
-
 
 #valider {
 	width: 237px;
@@ -381,18 +420,22 @@ a:visited{
 	font-size: 14px;
 	font-weight: 700;
 	font-family: sans-serif;
+	margin-top: 30px;
+	margin-left: 100px;
+	position: relative;
+	z-index: 2;
 }
 
 #butonImage {
 	background-color:#E8F1F6;
-	width: 430px;
+	width: 420px;
 	height: 170px;
 	position: relative;
 	border: none;
 	border-radius: 5px;
 }
 
-#imageAw {
+#imageLogo {
     position: absolute;
     top: 10px;
     left: 50%;
@@ -422,5 +465,28 @@ a:visited{
     left: 50%;
     transform: translateX(-50%);
 	font-size: 10px;
+	font-weight: 400;
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 998; 
+  }
+
+#modeEdition {
+	background-color: black;
+	width: 100%;
+	height: 20px;
+	padding: 10px 0;
+	text-align: center;
+	top: 0;
+	left: 0;
+	color: white;
+	font: Work Sans;
 	font-weight: 400;
 }
