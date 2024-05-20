@@ -141,6 +141,9 @@ li:hover {
 	text-align: center;
 	margin-bottom: 1em;
 }
+#portfolio h2#projets.off div#filter-buttons {
+	display: none;
+}
 
 
 #portfolio {
@@ -298,7 +301,7 @@ a:visited{
 	width: 600px;
 	height: 630px;
 	position: fixed;
-	top: 30%;
+	top: 10%;
 	left: 35%;
 	background-color:white;
 	border-radius: 10px;

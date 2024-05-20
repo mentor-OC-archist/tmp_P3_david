@@ -6,7 +6,7 @@ info:
 servers:
   - url: http://localhost:5678/api/
 paths:
-  /users/login:
+  /users/login: 
     post:
       summary: Log In the user.
       requestBody:
@@ -16,9 +16,9 @@ paths:
             schema:
               type: object
               properties:
-                email:
+                email: 
                   type: string
-                password:
+                password: 
                   type: string
       responses:
         '200':
