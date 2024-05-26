@@ -28,11 +28,7 @@ export default class MyClass extends APIClass{
     }
     
     attachHomepageEvents(){
-        // ATTACH EVENT ON LOGIN/LOGOUT BUTTON 
-        document.querySelector('#login-toggle').addEventListener("click", this.handleLogin)
-
-        // ATTACH EVENT ON MODAL LINK BUTTON
-        document.querySelector('#modalLink').addEventListener('click', async e => {
+        const handleModalbtn = async e => {
             e.preventDefault()
             
             this.renderTemplateModal()
@@ -40,32 +36,15 @@ export default class MyClass extends APIClass{
             this.works.map(project => project.imageUrl)
                 .forEach(this.renderModalWorksCards)
             
-        })
-
-    }
-
-    loadHomepage(){
-        const loginToggle = document.getElementById("login-toggle")
-        const isLoggedIn = localStorage.getItem("tokenID")
-        const filterButtons = document.getElementById("filter-buttons")
-        const modalButton = document.querySelector("#modalLink")
-        const editionBar = document.getElementById("modeEdition")
-
-        if (isLoggedIn) {
-            editionBar.style.display = 'block'
-            modalButton.style.display = 'block'
-            loginToggle.textContent = 'logout'
-            projets.classList.add('off')
-        } else {
-            // alert(projets.classList)
-            const loginToggle = document.getElementById("login-toggle")
-            loginToggle.textContent = 'login'
-            editionBar.style.display = 'none'
-            modalButton.style.display = 'none' 
-            loginToggle.style.display = 'block'
-            projets.classList.remove('off')
         }
+        // ATTACH EVENT ON LOGIN/LOGOUT BUTTON 
+        document.querySelector('#login-toggle').addEventListener("click", this.handleLogin)
+
+        // ATTACH EVENT ON MODAL LINK BUTTON
+        document.querySelector('#modalLink').addEventListener('click', handleModalbtn)
+
     }
+
     
 
     // logoutUser = () => {

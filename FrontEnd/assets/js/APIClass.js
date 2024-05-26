@@ -17,6 +17,7 @@ export default class APIClass extends DOMClass{
     // - TOUTES LES INSTANCES DE CETTE CLASSE, OU DE LA CLASSE PARENTE
     #works_endpoint = "http://localhost:5678/api/works"
     #categories_endpoint = "http://localhost:5678/api/categories"
+    #login_endpoint = "http://localhost:5678/api/users/login"
     requestOptions = {
         method: "POST",
         headers: {
@@ -39,6 +40,10 @@ export default class APIClass extends DOMClass{
 
 
         console.log(this)
+    }
+
+    catch = (error,msg="") => {
+        console.error(msg,error)
     }
     
 
@@ -103,68 +108,63 @@ export default class APIClass extends DOMClass{
     }
     
     // loginUser = () => {
-    submitLoginForm = () => {
+    submitLoginForm = (cb) => {
         const email = document.getElementById("email").value                          /// sophie.bluel@test.tld
-        const password = document.getElementById("password").value                   /// S0phie
-        const data = {email, password}
+        , password = document.getElementById("password").value                   /// S0phie
+        , formData = {email, password}
         
-        const errorMessage = document.createElement("div")
-        errorMessage.textContent = ""
-        errorMessage.id = "error-message"
         
-        const checkErrorMessage = document.getElementById("error-message")
-        if (checkErrorMessage) {
-            checkErrorMessage.remove()
-        }
-        
-        this.requestOptions.body = JSON.stringify(data)
-        fetch("http://localhost:5678/api/users/login", this.requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            if (data.token) {
-                localStorage.setItem("tokenID", data.token)
-                console.log("Token recupéré:", data.token)  
-                // window.location.href = "index.html" 
-                document.querySelector('.login-container').remove()
-                this.loadHomepage()
-            } 
-            else {
-                errorMessage.textContent = "Utilisateur ou mot de passe incorrect !"
-                errorMessage.style.color = "red"
-                console.log("La connexion a échoué.")
-                const loginContainer = document.querySelector(".login-container")
-                const titleLogin = document.getElementById("loginLink")
-                        loginContainer.insertBefore(errorMessage, titleLogin.nextSibling)
-            }})
-        
-            .catch(error => console.log(error))
+        this.requestOptions.body = JSON.stringify(formData)
+        fetch(this.#login_endpoint, this.requestOptions)
+            .then(response => response.json())
+            .then(cb)
+            .catch(this.catch)
     }
     
+    postWork = async (formData) => {                                                 /// delete work
+        const token = localStorage.getItem('tokenID')
+        
+        try {
+            if (!token) throw new Error('Token non trouvé')
+            
+            const response = await fetch(this.#works_endpoint, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': "application/json"
+                }
+            })
+
+            if (response.ok) this.renderModalFormAddImage()
+            else this.catch(error,'Problème de chargement :')
+
+        } catch (error) {
+            this.catch(error,'Erreur lors de la requête fetch :')
+        }
+    }
+
     async deleteWork(workId) {                                                 /// delete work
-        const urlWork = `http://localhost:5678/api/works/${workId}`
+        const urlWork = `${this.#works_endpoint}/${workId}`
+
         try {
             const token = localStorage.getItem('tokenID')
-            if (!token) {
-            throw new Error('Token not found')
-            }
+
+            if (!token) throw new Error('Token not found')
             
             const response = await fetch(urlWork, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             })
-            console.log("Delete work response:", response)
-            if (!response.ok) {
-            throw new Error('Failed to delete work')
-            }
-            alert('ok')
 
-            return true 
-        } catch (error) {
-            console.error('Error deleting work:', error)
-            return false 
-        }
+            // console.log("Delete work response:", response)
+            if (!response.ok) {
+                throw new Error('Failed to delete work')
+            }
+
+        } catch (error) {this.catch(error,'Error deleting work:')}
         
     }
     

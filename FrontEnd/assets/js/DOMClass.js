@@ -4,6 +4,30 @@ export default class DOMClass{
         props && Object.assign(this, props)
         console.log(this)
     }
+
+    loadHomepage(){
+        const loginToggle = document.getElementById("login-toggle")
+        , isLoggedIn = localStorage.getItem("tokenID")
+        , filterButtons = document.getElementById("filter-buttons")
+        , modalButton = document.querySelector("#modalLink")
+        , editionBar = document.getElementById("modeEdition")
+
+        if (isLoggedIn) {
+            editionBar.style.display = 'block'
+            modalButton.style.display = 'block'
+            loginToggle.textContent = 'logout'
+            projets.classList.add('off')
+        } else {
+            // alert(projets.classList)
+            const loginToggle = document.getElementById("login-toggle")
+            loginToggle.textContent = 'login'
+            editionBar.style.display = 'none'
+            modalButton.style.display = 'none' 
+            loginToggle.style.display = 'block'
+            projets.classList.remove('off')
+        }
+    }
+
     handleLogin = () => {
         // if (!localStorage.getItem('tokenID')) {
         if (localStorage.getItem("tokenID")) {
@@ -32,19 +56,23 @@ export default class DOMClass{
     handleModalFormFileInput(){
                     
             const selectedFile = photoInput.files[0]
-            const reader = new FileReader()
+            , reader = new FileReader()
+
             reader.onload = function (event) {
                 const imageUrl = event.target.result
-                const buttonImage = document.getElementById("butonImage")
-                const uploadedImage = document.createElement("img")
+                , buttonImage = document.getElementById("butonImage")
+                , uploadedImage = document.createElement("img")
+
                 uploadedImage.src = imageUrl
                 uploadedImage.style.width = "35%"
                 uploadedImage.style.height = "100%"
+                
                 while (buttonImage.firstChild) {
                     buttonImage.removeChild(buttonImage.firstChild)
                 }
                 buttonImage.appendChild(uploadedImage)
             }
+
             if (selectedFile) {
                 reader.readAsDataURL(selectedFile)
             }
@@ -52,17 +80,19 @@ export default class DOMClass{
 
     // renderWorksCards(works){ // CECI EST UNE MÉTHODE DE LA CLASSE
     renderWorksCards = (data) => { //MAIS CECI UNE PROPRIÉTÉ DE LA CLASSE, CONTENAT UNE FONCTION FLÉCHÉE (la différence se situe sur la valeur de la variable 'this')
-        this.works = data
         const galleryDiv = document.getElementById("gallery")
-        data.forEach((project) => {
+
+        this.works = data
+        this.works.forEach((project) => {
             const figure = document.createElement("figure")
+            , img = document.createElement("img")
+            , figcaption = document.createElement("figcaption")
 
             figure.dataset.id = project.categoryId
-            const img = document.createElement("img")
+
             img.src = project.imageUrl
             img.alt = project.title
 
-            const figcaption = document.createElement("figcaption")
             figcaption.textContent = project.title
 
             figure.appendChild(img)
@@ -74,17 +104,20 @@ export default class DOMClass{
 
     // renderFilterCategory(categories){
     renderFilterCategory = (data) => {
-        this.categories = data
         const filter = document.createElement("div")
+        , allButton = document.createElement("button")
+        
+
         filter.id = "filter-buttons"
     
-        const allButton = document.createElement("button")
         allButton.textContent = "Tous"
         allButton.id = "buttons"
         allButton.dataset.category = "all"
         allButton.addEventListener("click", this.handleClickEvent_on_filterGallery)
+
         filter.appendChild(allButton)
     
+        this.categories = data
         this.categories.forEach((category) => {
             const button = document.createElement("button")
             button.id = "buttons"
@@ -100,13 +133,16 @@ export default class DOMClass{
 
     renderEditionBar(){
         const modeEditionDiv = document.createElement("div")
+        , iconElement = document.createElement("i")
+
         modeEditionDiv.id = "modeEdition"
         modeEditionDiv.textContent = "Mode édition"
-        const iconElement = document.createElement("i")
-        iconElement.classList.add("fa-regular", "fa-pen-to-square")
-        document.body.prepend(modeEditionDiv)
         modeEditionDiv.appendChild(iconElement)
         modeEditionDiv.insertBefore(iconElement, modeEditionDiv.firstChild)
+
+        iconElement.classList.add("fa-regular", "fa-pen-to-square")
+        
+        document.body.prepend(modeEditionDiv)
     }
 
     renderTemplateModal() {
@@ -138,6 +174,9 @@ export default class DOMClass{
         </div>`
         main.insertAdjacentHTML('beforeend', stringLiteralModal)
 
+        const addPictureButton = document.querySelector('.addpicture')                       /// add picture click 
+        addPictureButton.addEventListener('click', this.renderModalFormSelect)
+
         overlay.classList.add('overlay')
         document.body.appendChild(overlay)
 
@@ -146,12 +185,13 @@ export default class DOMClass{
         document.addEventListener('click', closeModal___ClickDocument)
 
 
-        const addPictureButton = document.querySelector('.addpicture')                       /// add picture click 
-        addPictureButton.addEventListener('click', this.renderModalFormSelect)
     }
+
     renderLoginModal() {
         const header = document.querySelector("header")
-        const stringLiteralLogin = `<div class="login-container">
+        , errorMessage = document.createElement("div")
+        , checkErrorMessage = document.getElementById("error-message")
+        , stringLiteralLogin = `<div class="login-container">
         <h2 class="title-login" id="loginLink">Log In</h2>
         <form action="login" method="post">
             <label htmlFor="email">E-mail</label>
@@ -162,11 +202,43 @@ export default class DOMClass{
         <input type="submit" id="submit" value="Se connecter" />
         <a href="#">Mot de passe oublié</a>
         </div>`
+        , failedConnexion = () => {
+            const loginContainer = document.querySelector(".login-container")
+            , titleLogin = document.getElementById("loginLink")
+
+            loginContainer.insertBefore(errorMessage, titleLogin.nextSibling)
+            errorMessage.textContent = "Utilisateur ou mot de passe incorrect !"
+            errorMessage.style.color = "red"
+            console.log("La connexion a échoué.")
+        }
+        , succeedConnexion = data => {
+            localStorage.setItem("tokenID", data.token)
+            console.log("Token recupéré:", data.token)  
+            document.querySelector('.login-container').remove()
+            
+            // window.location.href = "index.html" 
+            this.loadHomepage()
+        } 
+        , callback = data => {
+            if (data.token) succeedConnexion(data)
+            else failedConnexion()
+        }
+
         header.insertAdjacentHTML('beforeend', stringLiteralLogin)
         
-    
         const submitButton = document.getElementById("submit")
-        submitButton.addEventListener("click", this.submitLoginForm)
+        submitButton.addEventListener("click", e => {
+            this.submitLoginForm(callback)
+
+            //COMENTAIRE À METTRE ICI
+            errorMessage.textContent = ""
+            errorMessage.id = "error-message"
+            
+            //COMENTAIRE À METTRE ICI
+            if (checkErrorMessage) {
+                checkErrorMessage.remove()
+            }
+        })
         document.body.style.overflow = "hidden"
     }
 
@@ -177,9 +249,11 @@ export default class DOMClass{
         , img = document.createElement("img")
         , hideButton = document.createElement("button")
         , handleDelete = async () => {                              /// button delete work
-            container.style.display = "none"
             const imageUrl = container.querySelector('img').src
-            const workId = this.works.find(project => project.imageUrl === imageUrl)?.id
+            , workId = this.works.find(project => project.imageUrl === imageUrl)?.id
+
+            container.style.display = "none"
+            
             if (workId) {
                 const deleted = await this.deleteWork(workId)
                 if (!deleted) {
@@ -212,116 +286,101 @@ export default class DOMClass{
         , addPictureButton = document.querySelector('.addpicture')
         , addReader = function () {
             // Vérifier si des fichiers ont été sélectionnés
+            // 1*: Créer un objet URL pour l'image sélectionnée
+            // 2*: Afficher l'image dans l'élément de prévisualisation
+            // 3*: Masquer les autres éléments HTML
             if (photo.files && photo.files[0]) {
-                // Créer un objet URL pour l'image sélectionnée
                 const reader = new FileReader();
 
+                // 1*
                 reader.onload = function (e) {
-                    // Afficher l'image dans l'élément de prévisualisation
+                    // 2*
                     okimg.src = e.target.result;
-
-                    // Masquer les autres éléments HTML
+                    // 3*
                     imageLogo.style.display = "none";
                 }
-
 
                 reader.readAsDataURL(photo.files[0]);
             }
         }
 
         photoModal.innerHTML = `
-        <button class="js-modal-back"><i class="fa-solid fa-arrow-left"></i></button>
-        <form id="addPhotoForm">
-            <label id="butonImage" for="photo" id___="addphoto">
-                <input type="file" id="photo" name="photoFile" accept="image/*" style="display: none">
-                <i class="fa-regular fa-image" id="imageLogo"></i>
-                <img id="okimg" />
-                <span>+ Ajouter une photo</span>
-                <p id="photoSize">jpg, png : 4mo max</p>
-            </label>
-            <label for="photoTitle" id="titlework">Titre</label>
-            <input type="text" id="namework" required>
-            <label for="photoCategory" id="titlecategorie">Catégorie</label>
-            <select id="categoriework" required> </select>
-            <button id="valider" type="submit">Valider</button>
-        </form>`
+            <button class="js-modal-back"><i class="fa-solid fa-arrow-left"></i></button>
+            <form id="addPhotoForm">
+                <label id="butonImage" for="photo" id___="addphoto">
+                    <input type="file" id="photo" name="photoFile" accept="image/*" style="display: none">
+                    <i class="fa-regular fa-image" id="imageLogo"></i>
+                    <img id="okimg" />
+                    <span>+ Ajouter une photo</span>
+                    <p id="photoSize">jpg, png : 4mo max</p>
+                </label>
+                <label for="photoTitle" id="titlework">Titre</label>
+                <input type="text" id="namework" required>
+                <label for="photoCategory" id="titlecategorie">Catégorie</label>
+                <select id="categoriework" required> </select>
+                <button id="valider" type="submit">Valider</button>
+            </form>
+        `
+
         addPictureButton.style.display = 'none'
+
         modalTitle.textContent = 'Ajout photo'
+
         photo.addEventListener('change',addReader)
     }
 
     renderModalFormSelect = () => {
+        
         this.renderModalFormAddImage()
 
-        const photoForm = document.getElementById("addPhotoForm")
-        photoForm.addEventListener('submit', fetchAddProject)
-
-
-
-
         const backButton = document.querySelector('.js-modal-back')                      /// back button modal 
+        , photoForm = document.getElementById("addPhotoForm")
+        , selectElement = document.getElementById("categoriework")
+        , fetchAddProject = (event) => {              /// add new work
+            event.preventDefault()
+            
+            const selectedImage = document.getElementById("photo").files[0]
+            , titleValue = document.getElementById("namework").value
+            , selectedCategoryId = document.getElementById("categoriework").value
+            , formData = new FormData()
+            
+            formData.append("image", selectedImage)
+            formData.append("title", titleValue)
+            formData.append("category", selectedCategoryId)
+            
+
+            this.postWork(formData)
+        }
+
         backButton.addEventListener('click', () => {
             const modalTitle = document.querySelector('.modal-title')
-            const addPictureButton = document.querySelector('.addpicture')
-            alert(this.works)
+            , addPictureButton = document.querySelector('.addpicture')
+
+            // alert(this.works)
             // loadWorks()
+            
             photoForm.style.display = "none"
             modalTitle.textContent = 'Galerie photo'
             addPictureButton.style.display = 'block'
             backButton.style.display = "none"
         })
 
+        photoForm.addEventListener('submit', fetchAddProject)
 
-        const selectElement = document.getElementById("categoriework")
         selectElement.innerHTML = ''
-        console.log(selectElement.innerHTML)
-        console.log(this.categories)
-        console.log(this.works)
+        // console.log(selectElement.innerHTML)
+        // console.log(this.categories)
+        // console.log(this.works)
     
 
         this.categories.forEach(category => {
             const option = document.createElement("option")
+
             option.value = category.id
             option.textContent = category.name
             selectElement.appendChild(option)
         })
 
-
-        async function fetchAddProject(event) {              /// add new work
-            event.preventDefault()
-            
-            const selectedImage = document.getElementById("photo").files[0]
-            const titleValue = document.getElementById("namework").value
-            const selectedCategoryId = document.getElementById("categoriework").value
-            
-            const formData = new FormData()
-            formData.append("image", selectedImage)
-            formData.append("title", titleValue)
-            formData.append("category", selectedCategoryId)
-            const token = localStorage.getItem('tokenID')
-            
-            if (!token) {
-                throw new Error('Token non trouvé')
-            }
-            try {
-                const response = await fetch('http://localhost:5678/api/works', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': "application/json"
-                    }
-                })
-                if (response.ok) {
-                    console.log('Image chargée !')
-                    this.renderModalFormAddImage()
-                } else {
-                    console.error('Problème de chargement :', response.status)
-                }
-            } catch (error) {
-                console.error('Erreur lors de la requête fetch :', error)
-            }
-        }
     }
 
     renderModalGallery(){
